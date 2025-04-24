@@ -1,0 +1,213 @@
+/* Основные стили для платформы ФСП */
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.footer {
+    margin-top: auto;
+}
+
+/* Стили для карточек соревнований */
+.card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Стили для значков дисциплин */
+.badge {
+    font-weight: normal;
+    padding: 0.5em 0.7em;
+}
+
+/* Стили для форм */
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Стили для навигации */
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+/* Стили для таблиц */
+.table {
+    vertical-align: middle;
+}
+
+/* Стили для кнопок действий */
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+/* Стили для заголовков секций */
+.section-title {
+    border-bottom: 2px solid #f8f9fa;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* Стили для информационных блоков */
+.info-block {
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+/* Стили для профиля пользователя */
+.profile-header {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+/* Стили для карточек с результатами */
+.result-card {
+    border-left: 4px solid #0d6efd;
+}
+
+/* Стили для индикаторов статуса */
+.status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.status-pending {
+    background-color: #ffc107;
+}
+
+.status-approved {
+    background-color: #198754;
+}
+
+.status-rejected {
+    background-color: #dc3545;
+}
+
+.status-forming {
+    background-color: #0dcaf0;
+}
+
+/* Стили для аватаров */
+.avatar-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Стили для достижений */
+.achievement-icon {
+    font-size: 1.2rem;
+    margin-right: 5px;
+}
+
+/* Стили для ролей */
+.role-badge-admin {
+    background-color: #dc3545;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.role-badge-regional {
+    background-color: #0d6efd;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.role-badge-athlete {
+    background-color: #198754;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+/* Анимации и эффекты для достижений */
+.badge {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.badge:hover {
+    transform: scale(1.1);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+    cursor: pointer;
+}
+
+/* Стили для рейтинговой карточки */
+.rating-card {
+    border-left: 4px solid #0d6efd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: #f8f9fa;
+}
+
+.rating-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #0d6efd;
+}
+
+.rating-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1rem;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    .table-responsive {
+        font-size: 0.9rem;
+    }
+
+    .avatar-circle {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1rem;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    .table-responsive {
+        font-size: 0.9rem;
+    }
+}

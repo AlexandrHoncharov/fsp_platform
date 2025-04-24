@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ФСП - Федерация Спортивного Программирования{% endblock %}</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#0d6efd',
+                        'primary-dark': '#0b5ed7',
+                        'secondary': '#6c757d',
+                        'success': '#198754',
+                        'danger': '#dc3545',
+                        'warning': '#ffc107',
+                        'info': '#0dcaf0',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .avatar-sm {
+                @apply w-8 h-8 flex items-center justify-center rounded-full text-sm font-bold;
+            }
+            .avatar-md {
+                @apply w-10 h-10 flex items-center justify-center rounded-full text-base font-bold;
+            }
+            .avatar-lg {
+                @apply w-16 h-16 flex items-center justify-center rounded-full text-2xl font-bold;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="flex flex-col min-h-screen bg-gray-50">
+    <!-- Navbar -->
+    <nav class="sticky top-0 bg-primary shadow-md z-10">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo and Brand -->
+                <div class="flex items-center">
+                    <a href="{{ url_for('auth.index') }}" class="flex items-center text-white font-bold text-xl">
+                        <i class="bi bi-code-square mr-2"></i>
+                        <span>ФСП</span>
+                    </a>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button type="button" id="mobile-menu-button" class="text-white hover:text-gray-200">
+                        <i class="bi bi-list text-2xl"></i>
+                    </button>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center justify-between w-full ml-10">
+                    <div class="flex space-x-4">
+                        <a href="{{ url_for('auth.index') }}" class="flex items-center text-white hover:text-gray-200 px-3 py-2 rounded-md">
+                            <i class="bi bi-house mr-1"></i> Главная
+                        </a>
+                        <a href="{{ url_for('competitions.list') }}" class="flex items-center text-white hover:text-gray-200 px-3 py-2 rounded-md">
+                            <i class="bi bi-trophy mr-1"></i> Соревнования
+                        </a>
+                        <a href="{{ url_for('rating.athletes') }}" class="flex items-center text-white hover:text-gray-200 px-3 py-2 rounded-md">
+                            <i class="bi bi-bar-chart mr-1"></i> Рейтинг
+                        </a>
+                        
+                        {% if current_user.is_authenticated %}
+                            {% if current_user.role in ['fsp_admin', 'regional_representative'] %}
+                            <div class="relative" x-data="{ open: false }">
+                                <button @click="open = !open" class="flex items-center text-white hover:text-gray-200 px-3 py-2 rounded-md">
+                                    {% if current_user.role == 'fsp_admin' %}
+                                    <span class="bg-danger text-white text-xs px-2 py-1 rounded mr-1">Администратор</span>
+                                    {% else %}
+                                    <span class="bg-info text-white text-xs px-2 py-1 rounded mr-1">Представитель</span>
+                                    {% endif %}
+                                    <i class="bi bi-gear mr-1"></i> Управление
+                                    <i class="bi bi-chevron-down ml-1"></i>
+                                </button>
+                                <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                                    <div class="py-1">
+                                        <a href="{{ url_for('admin.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                            <i class="bi bi-speedometer2 mr-2"></i> Панель управления
+                                        </a>
+                                        <a href="{{ url_for('competitions.create') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                            <i class="bi bi-plus-circle mr-2"></i> Создать соревнование
+                                        </a>
+                                        <a href="{{ url_for('admin.team_approvals') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                            <i class="bi bi-check2-square mr-2"></i> Заявки команд
+                                        </a>
+                                        {% if current_user.role == 'fsp_admin' %}
+                                        <hr class="my-1 border-gray-200">
+                                        <a href="{{ url_for('admin.analytics') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                            <i class="bi bi-graph-up mr-2"></i> Аналитика
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="flex items-center">
+                        {% if current_user.is_authenticated %}
+                        <div class="relative" x-data="{ open: false }">
+                            <button @click="open = !open" class="flex items-center text-white hover:text-gray-200 px-3 py-2 rounded-md">
+                                <div class="avatar-sm bg-white text-primary mr-2">
+                                    {{ current_user.username[0] | upper }}
+                                </div>
+                                {{ current_user.username }}
+                                <i class="bi bi-chevron-down ml-1"></i>
+                            </button>
+                            <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                                <div class="py-1">
+                                    <a href="{{ url_for('profile.view') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <i class="bi bi-person-circle mr-2"></i> Мой профиль
+                                    </a>
+                                    {% if current_user.role == 'athlete' %}
+                                    <a href="{{ url_for('rating.athletes') }}?user={{ current_user.id }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <i class="bi bi-award mr-2"></i> Мои достижения
+                                    </a>
+                                    {% endif %}
+                                    <hr class="my-1 border-gray-200">
+                                    <a href="{{ url_for('auth.logout') }}" class="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                                        <i class="bi bi-box-arrow-right mr-2"></i> Выйти
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <a href="{{ url_for('auth.login') }}" class="flex items-center text-white hover:text-gray-200 px-3 py-2 rounded-md">
+                            <i class="bi bi-box-arrow-in-right mr-1"></i> Войти
+                        </a>
+                        <a href="{{ url_for('auth.register') }}" class="flex items-center text-white hover:text-gray-200 px-3 py-2 rounded-md ml-2">
+                            <i class="bi bi-person-plus mr-1"></i> Регистрация
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div id="mobile-menu" class="hidden md:hidden bg-primary pb-4 px-4">
+            <div class="space-y-1">
+                <a href="{{ url_for('auth.index') }}" class="flex items-center text-white hover:text-gray-200 px-3 py-2 rounded-md">
+                    <i class="bi bi-house mr-2"></i> Главная
+                </a>
+                <a href="{{ url_for('competitions.list') }}" class="flex items-center text-white hover:text-gray-200 px-3 py-2 rounded-md">
+                    <i class="bi bi-trophy mr-2"></i> Соревнования
+                </a>
+                <a href="{{ url_for('rating.athletes') }}" class="flex items-center text-white hover:text-gray-200 px-3 py-2 rounded-md">
+                    <i class="bi bi-bar-chart mr-2"></i> Рейтинг
+                </a>
+                
+                {% if current_user.is_authenticated %}
+                    {% if current_user.role in ['fsp_admin', 'regional_representative'] %}
+                    <div class="border-t border-gray-700 pt-2 mt-2">
+                        <p class="text-gray-300 text-xs uppercase px-3 pb-1">Управление</p>
+                        <a href="{{ url_for('admin.index') }}" class="flex items-center text-white hover:text-gray-200 px-3 py-2 rounded-md">
+                            <i class="bi bi-speedometer2 mr-2"></i> Панель управления
+                        </a>
+                        <a href="{{ url_for('competitions.create') }}" class="flex items-center text-white hover:text-gray-200 px-3 py-2 rounded-md">
+                            <i class="bi bi-plus-circle mr-2"></i> Создать соревнование
+                        </a>
+                        <a href="{{ url_for('admin.team_approvals') }}" class="flex items-center text-white hover:text-gray-200 px-3 py-2 rounded-md">
+                            <i class="bi bi-check2-square mr-2"></i> Заявки команд
+                        </a>
+                        {% if current_user.role == 'fsp_admin' %}
+                        <a href="{{ url_for('admin.analytics') }}" class="flex items-center text-white hover:text-gray-200 px-3 py-2 rounded-md">
+                            <i class="bi bi-graph-up mr-2"></i> Аналитика
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                
+                    <div class="border-t border-gray-700 pt-2 mt-2">
+                        <p class="text-gray-300 text-xs uppercase px-3 pb-1">Аккаунт</p>
+                        <a href="{{ url_for('profile.view') }}" class="flex items-center text-white hover:text-gray-200 px-3 py-2 rounded-md">
+                            <i class="bi bi-person-circle mr-2"></i> Мой профиль
+                        </a>
+                        <a href="{{ url_for('auth.logout') }}" class="flex items-center text-white hover:text-gray-200 px-3 py-2 rounded-md">
+                            <i class="bi bi-box-arrow-right mr-2"></i> Выйти
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="border-t border-gray-700 pt-2 mt-2 flex">
+                        <a href="{{ url_for('auth.login') }}" class="flex-1 text-white bg-primary-dark hover:bg-blue-800 text-center py-2 rounded-md mr-1">
+                            <i class="bi bi-box-arrow-in-right mr-1"></i> Войти
+                        </a>
+                        <a href="{{ url_for('auth.register') }}" class="flex-1 text-white bg-primary-dark hover:bg-blue-800 text-center py-2 rounded-md ml-1">
+                            <i class="bi bi-person-plus mr-1"></i> Регистрация
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <main class="flex-grow">
+        <!-- Flash messages -->
+        <div class="container mx-auto mt-4 px-4">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    {% if category == 'message' %}
+                        {% set category = 'info' %}
+                    {% endif %}
+                    
+                    {% if category == 'success' %}
+                        {% set bg_color = 'bg-green-100' %}
+                        {% set text_color = 'text-green-800' %}
+                        {% set icon = 'bi-check-circle-fill' %}
+                    {% elif category == 'danger' %}
+                        {% set bg_color = 'bg-red-100' %}
+                        {% set text_color = 'text-red-800' %}
+                        {% set icon = 'bi-exclamation-triangle-fill' %}
+                    {% elif category == 'warning' %}
+                        {% set bg_color = 'bg-yellow-100' %}
+                        {% set text_color = 'text-yellow-800' %}
+                        {% set icon = 'bi-exclamation-circle-fill' %}
+                    {% elif category == 'info' %}
+                        {% set bg_color = 'bg-blue-100' %}
+                        {% set text_color = 'text-blue-800' %}
+                        {% set icon = 'bi-info-circle-fill' %}
+                    {% endif %}
+                    
+                    <div class="rounded-lg {{ bg_color }} {{ text_color }} p-4 mb-4 shadow-sm relative" role="alert">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <i class="bi {{ icon }} text-lg mr-2"></i>
+                            </div>
+                            <div>{{ message }}</div>
+                            <button type="button" class="ml-auto -mx-1.5 -my-1.5 rounded-lg focus:ring-2 p-1.5 inline-flex h-8 w-8 {{ bg_color }} {{ text_color }}" data-dismiss-target="alert">
+                                <span class="sr-only">Закрыть</span>
+                                <i class="bi bi-x text-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+        
+        <!-- Main Content -->
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h5 class="text-lg font-semibold mb-4">Федерация Спортивного Программирования</h5>
+                    <p class="text-gray-300">Платформа для проведения соревнований, формирования команд и учета достижений в области спортивного программирования.</p>
+                </div>
+                <div>
+                    <h5 class="text-lg font-semibold mb-4">Разделы</h5>
+                    <ul class="space-y-2">
+                        <li><a href="{{ url_for('auth.index') }}" class="text-gray-300 hover:text-white">Главная</a></li>
+                        <li><a href="{{ url_for('competitions.list') }}" class="text-gray-300 hover:text-white">Соревнования</a></li>
+                        <li><a href="{{ url_for('rating.athletes') }}" class="text-gray-300 hover:text-white">Рейтинг</a></li>
+                        <li><a href="{{ url_for('rating.achievements') }}" class="text-gray-300 hover:text-white">Достижения</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="text-lg font-semibold mb-4">Контакты</h5>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white">О проекте</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Поддержка</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Правила</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="border-gray-700 my-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <span class="text-gray-400">© 2025 Федерация Спортивного Программирования</span>
+                <div class="flex space-x-4 mt-4 md:mt-0">
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="bi bi-telegram"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="bi bi-github"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="bi bi-envelope"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Alpine.js for interactive components -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    
+    <!-- Custom JS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+            
+            // Alert dismiss
+            const alertButtons = document.querySelectorAll('[data-dismiss-target="alert"]');
+            alertButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const alert = this.closest('[role="alert"]');
+                    alert.classList.add('opacity-0');
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 300);
+                });
+            });
+            
+            // Auto dismiss alerts after 5 seconds
+            setTimeout(function() {
+                const alerts = document.querySelectorAll('[role="alert"]:not(.alert-important)');
+                alerts.forEach(function(alert) {
+                    alert.classList.add('opacity-0');
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 300);
+                });
+            }, 5000);
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

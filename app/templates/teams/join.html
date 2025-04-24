@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}ФСП - Присоединение к команде{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <h1 class="mb-4">Присоединение к команде</h1>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Информация о команде</h5>
+            </div>
+            <div class="card-body">
+                <h4>{{ team.name }}</h4>
+                <p>{{ team.description }}</p>
+                <p><strong>Капитан:</strong> {{ team.captain.username }}</p>
+                <p><strong>Соревнование:</strong> {{ team.competition.name }}</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Заявка на вступление</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('teams.join', id=team.id) }}">
+                    {{ form.hidden_tag() }}
+
+                    <div class="mb-3">
+                        {{ form.role_description.label(class="form-label") }}
+                        {{ form.role_description(class="form-control") }}
+                        <div class="form-text">Опишите вашу роль в команде, навыки и опыт, который вы можете привнести.</div>
+                        {% if form.role_description.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.role_description.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="alert alert-info mb-4">
+                        <p class="mb-0">
+                            После отправки заявки капитан команды рассмотрит её и примет решение о вашем участии.
+                            Вы можете отслеживать статус заявки в своем профиле.
+                        </p>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        {{ form.submit(class="btn btn-primary") }}
+                        <a href="{{ url_for('teams.view', id=team.id) }}" class="btn btn-outline-secondary">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

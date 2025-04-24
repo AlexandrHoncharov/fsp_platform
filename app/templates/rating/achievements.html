@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}ФСП - Достижения{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Система достижений</h1>
+    <div class="btn-group">
+        <a href="{{ url_for('rating.athletes') }}" class="btn btn-outline-primary">Спортсмены</a>
+        <a href="{{ url_for('rating.regions') }}" class="btn btn-outline-primary">Регионы</a>
+        <a href="{{ url_for('rating.achievements') }}" class="btn btn-primary active">Достижения</a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">О системе достижений</h5>
+            </div>
+            <div class="card-body">
+                <p>Система достижений ФСП позволяет спортсменам получать особые награды за активное участие и достижения в соревнованиях по спортивному программированию.</p>
+                <p>Достижения сгруппированы по категориям и имеют разную ценность. За каждое полученное достижение спортсмен получает дополнительные рейтинговые очки, которые влияют на его общий рейтинг.</p>
+                <p>Собирайте значки, повышайте свой статус и становитесь признанным мастером спортивного программирования!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% for category, achievements in achievements_by_category.items() %}
+<div class="card mb-4">
+    <div class="card-header bg-light">
+        <h5 class="mb-0">{{ category }}</h5>
+    </div>
+    <div class="card-body">
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for achievement in achievements %}
+            <div class="col">
+                <div class="card h-100 {% if achievement in current_user.achievements %}border-success{% endif %}">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0">{{ achievement.name }}</h6>
+                        <span class="badge bg-primary">{{ achievement.points }} очков</span>
+                    </div>
+                    <div class="card-body d-flex">
+                        <div class="me-3 fs-1">
+                            <i class="bi {{ achievement.badge_icon }}"></i>
+                        </div>
+                        <div>
+                            <p class="card-text">{{ achievement.description }}</p>
+                            {% if achievement in current_user.achievements %}
+                            <div class="badge bg-success">Получено</div>
+                            {% else %}
+                            <div class="badge bg-secondary">Не получено</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-info">
+    <p>Достижения пока не добавлены в систему.</p>
+</div>
+{% endfor %}
+
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+<style>
+    .bi-trophy { color: #ffc107; }
+    .bi-award { color: #6f42c1; }
+    .bi-star { color: #fd7e14; }
+    .bi-lightning { color: #0dcaf0; }
+    .bi-patch-check { color: #198754; }
+</style>
+{% endblock %}

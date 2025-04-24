@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}ФСП - Рейтинг спортсменов{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Рейтинг спортсменов</h1>
+    <div class="btn-group">
+        <a href="{{ url_for('rating.athletes') }}" class="btn btn-primary active">Спортсмены</a>
+        <a href="{{ url_for('rating.regions') }}" class="btn btn-outline-primary">Регионы</a>
+        <a href="{{ url_for('rating.achievements') }}" class="btn btn-outline-primary">Достижения</a>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Фильтры</h5>
+    </div>
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('rating.athletes') }}">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label for="region" class="form-label">Регион</label>
+                    <select class="form-select" id="region" name="region">
+                        <option value="">Все регионы</option>
+                        {% for region in regions %}
+                        <option value="{{ region.id }}" {% if selected_region == region.id %}selected{% endif %}>
+                            {{ region.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="discipline" class="form-label">Дисциплина</label>
+                    <select class="form-select" id="discipline" name="discipline">
+                        <option value="">Все дисциплины</option>
+                        {% for discipline_value, discipline_label in disciplines %}
+                        <option value="{{ discipline_value }}" {% if selected_discipline == discipline_value %}selected{% endif %}>
+                            {{ discipline_label }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Применить фильтры</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Топ-100 спортсменов</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Место</th>
+                        <th scope="col">Спортсмен</th>
+                        <th scope="col">Регион</th>
+                        <th scope="col">Рейтинговые очки</th>
+                        <th scope="col">Соревнований</th>
+                        <th scope="col">Побед</th>
+                        <th scope="col">Достижения</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for athlete in athletes %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>
+                            {{ athlete.username }}
+                            {% if loop.index <= 3 %}
+                                {% if loop.index == 1 %}
+                                <i class="bi bi-trophy-fill text-warning"></i>
+                                {% elif loop.index == 2 %}
+                                <i class="bi bi-trophy-fill text-secondary"></i>
+                                {% elif loop.index == 3 %}
+                                <i class="bi bi-trophy-fill text-danger"></i>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        <td>{{ athlete.region.name }}</td>
+                        <td><strong>{{ athlete.rating_points }}</strong></td>
+                        <td>{{ athlete.competitions_count }}</td>
+                        <td>{{ athlete.wins_count }}</td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                {% for achievement in athlete.achievements %}
+                                <span class="badge {{ achievement.badge_icon }}" data-bs-toggle="tooltip" title="{{ achievement.name }}">
+                                    <i class="bi bi-award"></i>
+                                </span>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td>
+                            <a href="#" class="btn btn-sm btn-outline-primary">Профиль</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+<style>
+    .bi-trophy-fill.text-warning {
+        color: #ffc107 !important;
+    }
+    .bi-trophy-fill.text-secondary {
+        color: #6c757d !important;
+    }
+    .bi-trophy-fill.text-danger {
+        color: #cd7f32 !important;
+    }
+</style>
+{% endblock %}s

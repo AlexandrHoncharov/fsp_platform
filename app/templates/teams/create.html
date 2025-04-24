@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}ФСП - Создание команды{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <h1 class="mb-4">Создание команды</h1>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Информация о соревновании</h5>
+            </div>
+            <div class="card-body">
+                <h5>{{ competition.name }}</h5>
+                <p>{{ competition.description|truncate(200) }}</p>
+                <div class="d-flex gap-2 mb-2">
+                    <span class="badge bg-primary">
+                        {% if competition.format == 'open' %}
+                            Открытое
+                        {% elif competition.format == 'regional' %}
+                            Региональное
+                        {% elif competition.format == 'federal' %}
+                            Всероссийское
+                        {% endif %}
+                    </span>
+
+                    <span class="badge bg-secondary">
+                        {% if competition.discipline == 'product' %}
+                            Продуктовое программирование
+                        {% elif competition.discipline == 'security' %}
+                            Программирование систем информационной безопасности
+                        {% elif competition.discipline == 'algorithm' %}
+                            Алгоритмическое программирование
+                        {% elif competition.discipline == 'robotics' %}
+                            Программирование робототехники
+                        {% elif competition.discipline == 'drone' %}
+                            Программирование беспилотных авиационных систем
+                        {% endif %}
+                    </span>
+                </div>
+                <p>
+                    <strong>Сроки проведения:</strong>
+                    {{ competition.start_date.strftime('%d.%m.%Y') }} - {{ competition.end_date.strftime('%d.%m.%Y') }}
+                </p>
+                <p>
+                    <strong>Регистрация до:</strong>
+                    {{ competition.registration_end.strftime('%d.%m.%Y %H:%M') }}
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Данные команды</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('teams.create', competition_id=competition.id) }}">
+                    {{ form.hidden_tag() }}
+
+                    <div class="mb-3">
+                        {{ form.name.label(class="form-label") }}
+                        {{ form.name(class="form-control") }}
+                        {% if form.name.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.name.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.description.label(class="form-label") }}
+                        {{ form.description(class="form-control", rows=3) }}
+                        <div class="form-text">Опишите вашу команду. Если вы ищете участников, расскажите, кого именно вы ищете и какие навыки требуются.</div>
+                        {% if form.description.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.description.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        {{ form.needs_members(class="form-check-input") }}
+                        {{ form.needs_members.label(class="form-check-label") }}
+                        <div class="form-text">Если вы ищете участников в команду, отметьте этот пункт. Ваша команда будет отображаться в списке формирующихся команд.</div>
+                    </div>
+
+                    <div class="alert alert-info mb-4">
+                        <p class="mb-0">
+                            Вы будете назначены капитаном команды. После создания команды вы сможете пригласить других участников или дождаться заявок от заинтересованных спортсменов.
+                        </p>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        {{ form.submit(class="btn btn-primary") }}
+                        <a href="{{ url_for('competitions.view', id=competition.id) }}" class="btn btn-outline-secondary">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,382 @@
+{% extends "base.html" %}
+
+{% block title %}ФСП - Команда {{ team.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Паттерн для фона заголовка */
+    .team-header-pattern {
+        background-color: #fff;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%230d6efd' fill-opacity='0.03'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    /* Плавная анимация карточек */
+    .member-card, .info-card {
+        transition-property: transform, box-shadow;
+        transition-duration: 300ms;
+    }
+
+    .member-card:hover, .info-card:hover {
+        transform: translateY(-0.5rem);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Заголовок команды -->
+    <div class="team-header-pattern rounded-2xl shadow-md p-6 md:p-8 mb-8 relative overflow-hidden">
+        <div class="flex flex-wrap items-center">
+            <div class="w-16 h-16 flex items-center justify-center bg-primary text-white rounded-xl shadow-lg mr-6 text-3xl">
+                <i class="bi bi-people"></i>
+            </div>
+            <div>
+                <div class="flex items-center flex-wrap mb-2">
+                    <h1 class="text-3xl font-bold mr-4 mb-2 sm:mb-0">{{ team.name }}</h1>
+                    <div>
+                        {% if team.status == 'pending' %}
+                            <span class="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-yellow-100 text-yellow-800">
+                                На модерации
+                            </span>
+                        {% elif team.status == 'approved' %}
+                            <span class="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-green-100 text-green-800">
+                                Подтверждена
+                            </span>
+                        {% elif team.status == 'rejected' %}
+                            <span class="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-red-100 text-red-800">
+                                Отклонена
+                            </span>
+                        {% elif team.status == 'forming' %}
+                            <span class="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800">
+                                Формируется
+                            </span>
+                        {% endif %}
+
+                        {% if team.needs_members %}
+                        <span class="inline-flex items-center px-3 py-1 ml-2 rounded-md text-xs font-medium bg-primary text-white">
+                            Требуются участники
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center mb-4 text-gray-600">
+                    <div class="mr-6 mb-2 sm:mb-0">
+                        <i class="bi bi-person-circle mr-2"></i>
+                        Капитан: {{ team.captain.username }}
+                    </div>
+                    <div class="mr-6 mb-2 sm:mb-0">
+                        <i class="bi bi-calendar3 mr-2"></i>
+                        Создана: {{ team.created_at.strftime('%d.%m.%Y') }}
+                    </div>
+                    <div class="mb-2 sm:mb-0">
+                        <i class="bi bi-people mr-2"></i>
+                        Участники: {{ team.get_confirmed_members_count() }}
+                    </div>
+                </div>
+
+                <a href="{{ url_for('competitions.view', id=team.competition_id) }}" class="inline-flex items-center px-4 py-2 border border-primary text-primary rounded-lg hover:bg-blue-50 transition-colors">
+                    <i class="bi bi-arrow-left mr-2"></i>
+                    Вернуться к соревнованию
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Основное содержимое: информация о команде и участники -->
+        <div class="lg:col-span-2">
+            <!-- Описание команды -->
+            {% if team.description %}
+            <div class="bg-white rounded-xl shadow-md mb-8 overflow-hidden">
+                <div class="bg-gray-50 px-6 py-4 border-b border-gray-100 font-semibold flex items-center">
+                    <i class="bi bi-file-text mr-2 text-primary"></i>
+                    Описание команды
+                </div>
+                <div class="p-6">
+                    <p class="text-gray-700">{{ team.description }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Статус команды для капитана -->
+            {% if is_captain %}
+            <div class="mb-8 rounded-xl overflow-hidden
+                {% if team.status == 'pending' %}bg-yellow-50 border-l-4 border-yellow-400
+                {% elif team.status == 'approved' %}bg-green-50 border-l-4 border-green-400
+                {% elif team.status == 'rejected' %}bg-red-50 border-l-4 border-red-400
+                {% elif team.status == 'forming' %}bg-blue-50 border-l-4 border-blue-400{% endif %}">
+
+                <div class="p-5">
+                    {% if team.status == 'forming' %}
+                    <div class="flex items-start mb-4">
+                        <i class="bi bi-info-circle-fill text-blue-500 text-xl mr-3 mt-1"></i>
+                        <div>
+                            <h5 class="font-bold mb-1">Команда в процессе формирования</h5>
+                            <p class="text-gray-600">Пригласите участников или дождитесь заявок от спортсменов. Когда команда будет готова, отправьте заявку на модерацию.</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <a href="{{ url_for('teams.submit', id=team.id) }}" class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="bi bi-check-circle mr-2"></i>
+                            Отправить заявку на участие
+                        </a>
+                    </div>
+
+                    {% elif team.status == 'pending' %}
+                    <div class="flex items-start">
+                        <i class="bi bi-hourglass-split text-yellow-500 text-xl mr-3 mt-1"></i>
+                        <div>
+                            <h5 class="font-bold mb-1">Заявка на рассмотрении</h5>
+                            <p class="text-gray-600">Ваша заявка отправлена на модерацию организатору соревнования. Пожалуйста, дождитесь ответа.</p>
+                        </div>
+                    </div>
+
+                    {% elif team.status == 'approved' %}
+                    <div class="flex items-start">
+                        <i class="bi bi-check-circle-fill text-green-500 text-xl mr-3 mt-1"></i>
+                        <div>
+                            <h5 class="font-bold mb-1">Команда подтверждена!</h5>
+                            <p class="text-gray-600">Ваша команда подтверждена для участия в соревновании. Вы получите уведомление о начале соревнования.</p>
+                        </div>
+                    </div>
+
+                    {% elif team.status == 'rejected' %}
+                    <div class="flex items-start">
+                        <i class="bi bi-exclamation-circle-fill text-red-500 text-xl mr-3 mt-1"></i>
+                        <div>
+                            <h5 class="font-bold mb-1">Заявка отклонена</h5>
+                            <p class="text-gray-600">К сожалению, ваша заявка на участие была отклонена организатором соревнования.</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Список участников команды -->
+            <h3 class="text-2xl font-bold mb-4">Участники команды</h3>
+            {% if members %}
+                <div class="space-y-4">
+                {% for member in members %}
+                    <div class="member-card bg-white rounded-xl shadow-md p-5
+                        {% if member.user_id == team.captain_id %}border-l-4 border-yellow-400
+                        {% elif member.status == 'invited' %}border-l-4 border-blue-400
+                        {% endif %}">
+                        <div class="flex flex-wrap items-start">
+                            <div class="w-12 h-12 bg-gray-100 text-gray-700 rounded-full flex items-center justify-center text-xl font-bold mr-4">
+                                {{ member.user.username[0] | upper }}
+                            </div>
+                            <div>
+                                <h5 class="text-lg font-semibold mb-1">{{ member.user.username }}</h5>
+                                <div class="text-gray-500 mb-2">{{ member.role_description or 'Роль не указана' }}</div>
+                                <div>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-gray-100 text-gray-800 mr-2">
+                                        {{ member.user.region.name }}
+                                    </span>
+                                    {% if member.user_id == team.captain_id %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-yellow-100 text-yellow-800">
+                                        Капитан
+                                    </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="absolute top-3 right-3">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium
+                                    {% if member.status == 'invited' %}bg-yellow-100 text-yellow-800
+                                    {% elif member.status == 'confirmed' %}bg-green-100 text-green-800
+                                    {% elif member.status == 'rejected' %}bg-red-100 text-red-800{% endif %}">
+                                    {{ member.get_status_display() }}
+                                </span>
+                            </div>
+                        </div>
+
+                        {% if is_captain and member.user_id != current_user.id and member.status == 'invited' %}
+                        <div class="flex justify-end mt-4 space-x-2">
+                            <a href="{{ url_for('teams.approve_member', member_id=member.id) }}" class="inline-flex items-center px-3 py-1.5 bg-green-500 text-white text-sm rounded-md hover:bg-green-600 transition-colors">
+                                <i class="bi bi-check-lg mr-1"></i>
+                                Принять
+                            </a>
+                            <a href="{{ url_for('teams.reject_member', member_id=member.id) }}" class="inline-flex items-center px-3 py-1.5 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 transition-colors">
+                                <i class="bi bi-x-lg mr-1"></i>
+                                Отклонить
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                </div>
+            {% else %}
+                <div class="flex flex-col items-center justify-center bg-gray-50 rounded-xl p-8 text-center">
+                    <i class="bi bi-people text-4xl text-gray-400 mb-4"></i>
+                    <h5 class="text-xl font-semibold mb-2">В команде пока нет участников</h5>
+                    <p class="text-gray-500">Добавьте участников, чтобы сформировать команду для соревнования.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Боковая информация и действия -->
+        <div class="lg:col-span-1">
+            <!-- Информация о соревновании -->
+            <div class="info-card bg-white rounded-xl shadow-md mb-6 overflow-hidden">
+                <div class="bg-gray-50 px-6 py-4 border-b border-gray-100 font-semibold flex items-center">
+                    <i class="bi bi-trophy mr-2 text-primary"></i>
+                    Соревнование
+                </div>
+                <div class="p-6">
+                    <h4 class="text-lg font-semibold mb-3">{{ team.competition.name }}</h4>
+                    <div class="space-y-2 text-gray-600 mb-4">
+                        <div class="flex items-center">
+                            <i class="bi bi-calendar-event mr-2 w-5 text-center"></i>
+                            <span>{{ team.competition.start_date.strftime('%d.%m.%Y') }} - {{ team.competition.end_date.strftime('%d.%m.%Y') }}</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="bi bi-tag mr-2 w-5 text-center"></i>
+                            <span>{{ team.competition.get_discipline_display() }}</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="bi bi-globe mr-2 w-5 text-center"></i>
+                            <span>{{ team.competition.get_format_display() }}</span>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('competitions.view', id=team.competition_id) }}" class="block w-full text-center px-4 py-2 border border-primary text-primary rounded-lg hover:bg-blue-50 transition-colors">
+                        <i class="bi bi-eye mr-1"></i>
+                        Подробнее о соревновании
+                    </a>
+                </div>
+            </div>
+
+            <!-- Блок действий -->
+            <div class="info-card bg-white rounded-xl shadow-md mb-6 overflow-hidden">
+                <div class="bg-gray-50 px-6 py-4 border-b border-gray-100 font-semibold flex items-center">
+                    <i class="bi bi-lightning-charge mr-2 text-primary"></i>
+                    Действия
+                </div>
+                <div class="p-6">
+                    {% if is_captain and team.status == 'forming' %}
+                        <!-- Для капитана формирующейся команды -->
+                        <div class="mb-4">
+                            <a href="{{ url_for('teams.submit', id=team.id) }}" class="block w-full text-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                <i class="bi bi-check-circle mr-2"></i>
+                                Отправить заявку на участие
+                            </a>
+                        </div>
+                        <div class="bg-blue-50 rounded-lg p-3 text-sm">
+                            <i class="bi bi-info-circle-fill mr-1 text-blue-500"></i>
+                            Перед отправкой убедитесь, что в команде достаточное количество участников.
+                        </div>
+                    {% elif can_join %}
+                        <!-- Для пользователя, который может присоединиться -->
+                        <div>
+                            <a href="{{ url_for('teams.join', id=team.id) }}" class="block w-full text-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                <i class="bi bi-person-plus mr-2"></i>
+                                Присоединиться к команде
+                            </a>
+                        </div>
+                    {% elif current_user.is_authenticated %}
+                        <!-- Для авторизованного пользователя, который не может присоединиться -->
+                        {% if team.needs_members %}
+                            <div class="bg-blue-50 rounded-lg p-3 text-sm">
+                                <i class="bi bi-info-circle-fill mr-1 text-blue-500"></i>
+                                Вы не можете присоединиться к этой команде, так как уже являетесь её участником или отправили заявку.
+                            </div>
+                        {% else %}
+                            <div class="bg-blue-50 rounded-lg p-3 text-sm">
+                                <i class="bi bi-info-circle-fill mr-1 text-blue-500"></i>
+                                Эта команда не набирает новых участников.
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <!-- Для неавторизованного пользователя -->
+                        <div class="bg-blue-50 rounded-lg p-3 text-sm">
+                            <i class="bi bi-info-circle-fill mr-1 text-blue-500"></i>
+                            Чтобы присоединиться к команде, необходимо <a href="{{ url_for('auth.login') }}" class="text-blue-700 hover:underline">войти в систему</a>.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Приглашение участника (для капитана) -->
+            {% if is_captain and team.status == 'forming' %}
+            <div class="bg-white rounded-xl shadow-md mb-6 p-6">
+                <h4 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="bi bi-person-plus mr-2 text-primary"></i>
+                    Пригласить участника
+                </h4>
+                <form method="GET" action="#">
+                    <div class="mb-4">
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Имя пользователя</label>
+                        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" id="username" name="username" placeholder="Введите имя пользователя">
+                    </div>
+                    <div class="mb-4">
+                        <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Роль в команде</label>
+                        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" id="role" name="role" placeholder="Например: Frontend-разработчик">
+                    </div>
+                    <div>
+                        <button type="submit" class="w-full px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="bi bi-send mr-2"></i>
+                            Отправить приглашение
+                        </button>
+                    </div>
+                </form>
+            </div>
+            {% endif %}
+
+            <!-- Руководство по формированию команды -->
+            {% if is_captain or can_join %}
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h4 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="bi bi-lightbulb mr-2 text-primary"></i>
+                    Как сформировать команду
+                </h4>
+                <ol class="relative border-l border-gray-200 ml-3 space-y-6">
+                    <li class="mb-6 ml-6">
+                        <span class="absolute flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full -left-4 ring-4 ring-white">
+                            1
+                        </span>
+                        <h5 class="font-semibold mb-1">Создайте команду</h5>
+                        <p class="text-sm text-gray-500">Капитан создает команду для соревнования</p>
+                    </li>
+                    <li class="mb-6 ml-6">
+                        <span class="absolute flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full -left-4 ring-4 ring-white">
+                            2
+                        </span>
+                        <h5 class="font-semibold mb-1">Соберите участников</h5>
+                        <p class="text-sm text-gray-500">Пригласите участников или разместите объявление о наборе</p>
+                    </li>
+                    <li class="mb-6 ml-6">
+                        <span class="absolute flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full -left-4 ring-4 ring-white">
+                            3
+                        </span>
+                        <h5 class="font-semibold mb-1">Подтвердите участников</h5>
+                        <p class="text-sm text-gray-500">Участники должны подтвердить свое участие</p>
+                    </li>
+                    <li class="mb-6 ml-6">
+                        <span class="absolute flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full -left-4 ring-4 ring-white">
+                            4
+                        </span>
+                        <h5 class="font-semibold mb-1">Отправьте заявку</h5>
+                        <p class="text-sm text-gray-500">Когда команда готова, отправьте заявку на модерацию</p>
+                    </li>
+                    <li class="ml-6">
+                        <span class="absolute flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full -left-4 ring-4 ring-white">
+                            5
+                        </span>
+                        <h5 class="font-semibold mb-1">Дождитесь одобрения</h5>
+                        <p class="text-sm text-gray-500">Организатор проверит заявку и подтвердит участие</p>
+                    </li>
+                </ol>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Дополнительный JavaScript, если необходимо
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,437 @@
+{% extends "base.html" %}
+
+{% block title %}ФСП - Профиль{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Паттерн для фона заголовка */
+    .profile-header-pattern {
+        background-color: #fff;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%230d6efd' fill-opacity='0.03'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    /* Анимация для карточек */
+    .stats-card, .team-card, .achievement-card, .invitation-card {
+        transition-property: transform, box-shadow;
+        transition-duration: 300ms;
+    }
+
+    .stats-card:hover, .team-card:hover, .achievement-card:hover, .invitation-card:hover {
+        transform: translateY(-0.5rem);
+    }
+
+    /* Цвета для плейсов в таблице результатов */
+    .place-1 {
+        background-color: #FFC107;
+        color: #212529;
+    }
+
+    .place-2 {
+        background-color: #CED4DA;
+        color: #212529;
+    }
+
+    .place-3 {
+        background-color: #CD7F32;
+        color: #FFFFFF;
+    }
+
+    /* Стили для табов */
+    .tab-active {
+        @apply text-primary border-b-2 border-primary font-semibold;
+    }
+
+    .tab-inactive {
+        @apply text-gray-500 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Профиль пользователя -->
+    <div class="profile-header-pattern rounded-2xl shadow-md p-6 md:p-8 mb-8 relative overflow-hidden">
+        <div class="flex flex-wrap items-center">
+            <div class="avatar-lg
+                {% if user.role == 'fsp_admin' %}bg-red-500
+                {% elif user.role == 'regional_representative' %}bg-blue-500
+                {% else %}bg-green-500{% endif %}
+                text-white mr-6">
+                {{ user.username[0] | upper }}
+            </div>
+            <div>
+                <div class="flex flex-wrap items-center mb-3">
+                    <h1 class="text-3xl font-bold mr-3 mb-1 md:mb-0">{{ user.username }}</h1>
+                    <span class="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium
+                        {% if user.role == 'fsp_admin' %}bg-red-100 text-red-800
+                        {% elif user.role == 'regional_representative' %}bg-blue-100 text-blue-800
+                        {% else %}bg-green-100 text-green-800{% endif %}">
+                        {{ user.get_role_display() }}
+                    </span>
+                </div>
+                <div class="flex flex-wrap items-center mb-4 text-gray-600">
+                    <div class="mr-6 mb-1 md:mb-0">
+                        <i class="bi bi-envelope mr-2"></i>
+                        {{ user.email }}
+                    </div>
+                    <div class="mr-6 mb-1 md:mb-0">
+                        <i class="bi bi-geo-alt mr-2"></i>
+                        {{ user.region.name }}
+                    </div>
+                    <div class="mb-1 md:mb-0">
+                        <i class="bi bi-calendar3 mr-2"></i>
+                        Зарегистрирован {{ user.created_at.strftime('%d.%m.%Y') }}
+                    </div>
+                </div>
+
+                {% if current_user.id == user.id %}
+                <a href="{{ url_for('profile.edit') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    <i class="bi bi-pencil mr-2"></i>
+                    Редактировать профиль
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Основное содержимое профиля -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <!-- Левая колонка (статистика и достижения) -->
+        <div class="lg:col-span-1">
+            {% if user.role == 'athlete' %}
+            <!-- Статистика -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold mb-3">Рейтинг и статистика</h3>
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="stats-card bg-white shadow-md rounded-xl p-4 text-center">
+                        <div class="text-3xl font-bold text-primary">{{ user.rating_points }}</div>
+                        <div class="text-sm text-gray-500">Рейтинг</div>
+                    </div>
+                    <div class="stats-card bg-white shadow-md rounded-xl p-4 text-center">
+                        <div class="text-3xl font-bold text-primary">{{ user.competitions_count }}</div>
+                        <div class="text-sm text-gray-500">Соревнования</div>
+                    </div>
+                    <div class="stats-card bg-white shadow-md rounded-xl p-4 text-center">
+                        <div class="text-3xl font-bold text-primary">{{ user.wins_count }}</div>
+                        <div class="text-sm text-gray-500">Победы</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Достижения -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-lg font-semibold">Достижения</h3>
+                    <a href="{{ url_for('rating.achievements') }}" class="text-sm text-primary hover:underline">Все достижения</a>
+                </div>
+                <div class="bg-white shadow-md rounded-xl p-5">
+                    {% if user.achievements.count() > 0 %}
+                    <div class="flex flex-wrap gap-2">
+                        {% for achievement in user.achievements %}
+                        <span class="achievement-card inline-flex items-center px-3 py-1.5 rounded-full bg-gray-100 text-gray-800 text-sm" data-tooltip="{{ achievement.description }}">
+                            <i class="bi {{ achievement.badge_icon }} mr-1.5"></i>
+                            {{ achievement.name }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-6">
+                        <i class="bi bi-award text-4xl text-gray-300 mb-3"></i>
+                        <p class="text-gray-500 mb-2">Пока нет достижений</p>
+                        {% if current_user.id == user.id %}
+                        <a href="{{ url_for('competitions.list') }}" class="inline-flex items-center px-3 py-1.5 text-sm bg-primary text-white rounded-md hover:bg-blue-600 transition-colors">
+                            Участвуйте в соревнованиях!
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if current_user.id == user.id and invitations and invitations|length > 0 %}
+            <!-- Приглашения -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold mb-3">Приглашения в команды</h3>
+                <div class="space-y-4">
+                    {% for invitation in invitations %}
+                    <div class="invitation-card bg-white shadow-md rounded-xl overflow-hidden">
+                        <div class="bg-gray-50 px-4 py-2 border-b border-gray-100">
+                            <strong>{{ invitation.team.name }}</strong>
+                        </div>
+                        <div class="p-4">
+                            <div class="space-y-1 mb-3 text-gray-600">
+                                <div><i class="bi bi-trophy mr-2"></i> {{ invitation.competition.name }}</div>
+                                <div><i class="bi bi-person mr-2"></i> Капитан: {{ invitation.captain.username }}</div>
+                                <div><i class="bi bi-diagram-3 mr-2"></i> Роль: {{ invitation.role }}</div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <a href="{{ url_for('profile.accept_invitation', invitation_id=invitation.id) }}"
+                                   class="flex justify-center items-center px-3 py-1.5 bg-green-500 text-white text-sm rounded-md hover:bg-green-600 transition-colors">
+                                    <i class="bi bi-check-lg mr-1"></i> Принять
+                                </a>
+                                <a href="{{ url_for('profile.decline_invitation', invitation_id=invitation.id) }}"
+                                   class="flex justify-center items-center px-3 py-1.5 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 transition-colors">
+                                    <i class="bi bi-x-lg mr-1"></i> Отклонить
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Правая колонка (команды, результаты, организованные соревнования) -->
+        <div class="lg:col-span-3">
+            <!-- Табы для навигации -->
+            <div x-data="{ activeTab: 'teams' }">
+                <!-- Навигация по вкладкам -->
+                <div class="flex border-b border-gray-200 mb-6">
+                    <button @click="activeTab = 'teams'"
+                            :class="activeTab === 'teams' ? 'tab-active' : 'tab-inactive'"
+                            class="py-4 px-6 focus:outline-none">
+                        <i class="bi bi-people mr-2"></i>
+                        Команды
+                    </button>
+                    <button @click="activeTab = 'results'"
+                            :class="activeTab === 'results' ? 'tab-active' : 'tab-inactive'"
+                            class="py-4 px-6 focus:outline-none">
+                        <i class="bi bi-trophy mr-2"></i>
+                        Результаты
+                    </button>
+                    {% if user.role != 'athlete' %}
+                    <button @click="activeTab = 'competitions'"
+                            :class="activeTab === 'competitions' ? 'tab-active' : 'tab-inactive'"
+                            class="py-4 px-6 focus:outline-none">
+                        <i class="bi bi-calendar-event mr-2"></i>
+                        Организованные соревнования
+                    </button>
+                    {% endif %}
+                </div>
+
+                <!-- Содержимое вкладок -->
+                <!-- Вкладка Команды -->
+                <div x-show="activeTab === 'teams'" x-transition.opacity class="bg-white rounded-xl shadow-md p-6">
+                    {% if teams %}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {% for team_data in teams %}
+                        <div class="team-card bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+                            <div class="bg-gray-50 px-5 py-3 flex justify-between items-center border-b border-gray-100">
+                                <h4 class="font-semibold">{{ team_data.team.name }}</h4>
+                                {% if team_data.team.captain_id == user.id %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                    Капитан
+                                </span>
+                                {% endif %}
+                            </div>
+                            <div class="p-5">
+                                <div class="space-y-1 mb-4 text-gray-600">
+                                    <div class="flex items-start">
+                                        <i class="bi bi-trophy mr-2 mt-0.5 w-4 text-center"></i>
+                                        <span>{{ team_data.competition.name }}</span>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <i class="bi bi-calendar mr-2 mt-0.5 w-4 text-center"></i>
+                                        <span>{{ team_data.competition.start_date.strftime('%d.%m.%Y') }}</span>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <i class="bi bi-diagram-3 mr-2 mt-0.5 w-4 text-center"></i>
+                                        <span>Роль: {{ team_data.role }}</span>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <i class="bi bi-people mr-2 mt-0.5 w-4 text-center"></i>
+                                        <span>Участников: {{ team_data.team.get_confirmed_members_count() }}</span>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <i class="bi bi-flag mr-2 mt-0.5 w-4 text-center"></i>
+                                        <span>Статус:
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                                {% if team_data.team.status == 'pending' %}bg-yellow-100 text-yellow-800
+                                                {% elif team_data.team.status == 'approved' %}bg-green-100 text-green-800
+                                                {% elif team_data.team.status == 'rejected' %}bg-red-100 text-red-800
+                                                {% elif team_data.team.status == 'forming' %}bg-blue-100 text-blue-800{% endif %}">
+                                                {{ team_data.team.get_status_display() }}
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <a href="{{ url_for('teams.view', id=team_data.team.id) }}"
+                                   class="block w-full text-center px-4 py-2 border border-primary text-primary rounded-lg hover:bg-blue-50 transition-colors">
+                                    <i class="bi bi-eye mr-1"></i> Просмотр
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="flex flex-col items-center justify-center py-12 text-center">
+                        <i class="bi bi-people text-5xl text-gray-300 mb-4"></i>
+                        <h4 class="text-xl font-semibold mb-2">Нет активных команд</h4>
+                        <p class="text-gray-500 mb-6">{% if current_user.id == user.id %}Вы пока не состоите ни в одной команде.{% else %}Пользователь пока не состоит ни в одной команде.{% endif %}</p>
+                        {% if current_user.id == user.id %}
+                        <a href="{{ url_for('competitions.list') }}"
+                           class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors">
+                            <i class="bi bi-plus-lg mr-2"></i> Найти соревнование
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Вкладка Результаты -->
+                <div x-show="activeTab === 'results'" x-transition.opacity x-cloak class="bg-white rounded-xl shadow-md p-6">
+                    {% if results %}
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Место</th>
+                                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Соревнование</th>
+                                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Дисциплина</th>
+                                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Баллы</th>
+                                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Дата</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                {% for result in results %}
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-4 whitespace-nowrap">
+                                        <div class="w-8 h-8 flex items-center justify-center rounded-full
+                                            {% if result.place == 1 %}place-1
+                                            {% elif result.place == 2 %}place-2
+                                            {% elif result.place == 3 %}place-3
+                                            {% else %}bg-gray-200 text-gray-700{% endif %}
+                                            font-semibold">
+                                            {{ result.place }}
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-4 whitespace-nowrap">
+                                        <a href="{{ url_for('competitions.view', id=result.competition.id) }}" class="text-primary hover:underline">
+                                            {{ result.competition.name }}
+                                        </a>
+                                    </td>
+                                    <td class="px-4 py-4 whitespace-nowrap">{{ result.competition.get_discipline_display() }}</td>
+                                    <td class="px-4 py-4 whitespace-nowrap font-semibold">{{ result.score }}</td>
+                                    <td class="px-4 py-4 whitespace-nowrap text-gray-500">{{ result.created_at.strftime('%d.%m.%Y') }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="flex flex-col items-center justify-center py-12 text-center">
+                        <i class="bi bi-trophy text-5xl text-gray-300 mb-4"></i>
+                        <h4 class="text-xl font-semibold mb-2">Нет результатов</h4>
+                        <p class="text-gray-500 mb-6">{% if current_user.id == user.id %}У вас пока нет результатов участия в соревнованиях.{% else %}У пользователя пока нет результатов участия в соревнованиях.{% endif %}</p>
+                        {% if current_user.id == user.id %}
+                        <a href="{{ url_for('competitions.list') }}"
+                           class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors">
+                            <i class="bi bi-search mr-2"></i> Найти соревнование
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Вкладка Организованных соревнований (для администраторов и региональных представителей) -->
+                {% if user.role != 'athlete' %}
+                <div x-show="activeTab === 'competitions'" x-transition.opacity x-cloak class="bg-white rounded-xl shadow-md p-6">
+                    {% if user.organized_competitions.count() > 0 %}
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Название</th>
+                                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Формат</th>
+                                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Дисциплина</th>
+                                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Даты</th>
+                                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Статус</th>
+                                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                {% for competition in user.organized_competitions %}
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-4 whitespace-nowrap">{{ competition.name }}</td>
+                                    <td class="px-4 py-4 whitespace-nowrap">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary text-white">
+                                            {{ competition.get_format_display() }}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-4 whitespace-nowrap">{{ competition.get_discipline_display() }}</td>
+                                    <td class="px-4 py-4 whitespace-nowrap">{{ competition.start_date.strftime('%d.%m.%Y') }}</td>
+                                    <td class="px-4 py-4 whitespace-nowrap">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                            {% if competition.status == 'draft' %}bg-gray-100 text-gray-800
+                                            {% elif competition.status == 'published' %}bg-blue-100 text-blue-800
+                                            {% elif competition.status == 'registration' %}bg-primary text-white
+                                            {% elif competition.status == 'ongoing' %}bg-yellow-100 text-yellow-800
+                                            {% elif competition.status == 'completed' %}bg-green-100 text-green-800
+                                            {% elif competition.status == 'archived' %}bg-gray-600 text-white{% endif %}">
+                                            {{ competition.get_status_display() }}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-4 whitespace-nowrap">
+                                        <div class="flex space-x-2">
+                                            <a href="{{ url_for('competitions.view', id=competition.id) }}"
+                                               class="inline-flex items-center p-1.5 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-50">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            {% if competition.status in ['draft', 'published', 'registration'] %}
+                                            <a href="#"
+                                               class="inline-flex items-center p-1.5 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-50">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="flex flex-col items-center justify-center py-12 text-center">
+                        <i class="bi bi-calendar-event text-5xl text-gray-300 mb-4"></i>
+                        <h4 class="text-xl font-semibold mb-2">Нет организованных соревнований</h4>
+                        <p class="text-gray-500 mb-6">{% if current_user.id == user.id %}Вы пока не организовали ни одного соревнования.{% else %}Пользователь пока не организовал ни одного соревнования.{% endif %}</p>
+                        {% if current_user.id == user.id %}
+                        <a href="{{ url_for('competitions.create') }}"
+                           class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors">
+                            <i class="bi bi-plus-lg mr-2"></i> Создать соревнование
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Отображение всплывающих подсказок для достижений
+        const achievementCards = document.querySelectorAll('.achievement-card');
+
+        achievementCards.forEach(card => {
+            const tooltip = card.getAttribute('data-tooltip');
+            if (tooltip) {
+                tippy(card, {
+                    content: tooltip,
+                    placement: 'top',
+                    arrow: true,
+                    theme: 'light'
+                });
+            }
+        });
+    });
+</script>
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
+{% endblock %}

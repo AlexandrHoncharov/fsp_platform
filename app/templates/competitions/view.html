@@ -1,0 +1,699 @@
+{% extends "base.html" %}
+
+{% block title %}ФСП - {{ competition.name }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+<style>
+    .competition-header {
+        background-color: #fff;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .competition-header::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 150px;
+        height: 100%;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="%230d6efd" fill-opacity="0.03"/><rect x="0" y="0" width="50" height="50" fill="%230d6efd" fill-opacity="0.03"/><rect x="50" y="50" width="50" height="50" fill="%230d6efd" fill-opacity="0.03"/></svg>');
+        background-size: 20px 20px;
+        opacity: 0.5;
+        z-index: 0;
+    }
+
+    .competition-icon {
+        font-size: 2rem;
+        color: #fff;
+        width: 64px;
+        height: 64px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1.5rem;
+        background-color: #0d6efd;
+        box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+    }
+
+    .competition-badge {
+        padding: 0.35rem 0.65rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        margin-right: 0.5rem;
+    }
+
+    .info-card {
+        border-radius: 15px;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: transform 0.3s, box-shadow 0.3s;
+        height: 100%;
+        border: none;
+    }
+
+    .info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 25px rgba(0,0,0,0.1);
+    }
+
+    .info-card-header {
+        padding: 1rem;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        background-color: #f8f9fa;
+        font-weight: 600;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        padding: 0.8rem 0;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .info-item:last-child {
+        border-bottom: none;
+    }
+
+    .info-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: rgba(13, 110, 253, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        color: #0d6efd;
+    }
+
+    .team-card {
+        border-radius: 15px;
+        overflow: hidden;
+        margin-bottom: 1rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: transform 0.3s, box-shadow 0.3s;
+        border: none;
+    }
+
+    .team-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 25px rgba(0,0,0,0.1);
+    }
+
+    .status-timeline {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+
+    .status-timeline::before {
+        content: '';
+        position: absolute;
+        top: 24px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background-color: #dee2e6;
+        z-index: 0;
+    }
+
+    .status-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+        width: 20%;
+    }
+
+    .status-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        background-color: #fff;
+        border: 2px solid #dee2e6;
+        margin-bottom: 0.5rem;
+    }
+
+    .status-label {
+        text-align: center;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .status-active .status-icon {
+        border-color: #0d6efd;
+        background-color: #0d6efd;
+        color: #fff;
+    }
+
+    .status-completed .status-icon {
+        border-color: #198754;
+        background-color: #198754;
+        color: #fff;
+    }
+
+    .description-card {
+        background-color: #fff;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        margin-bottom: 1.5rem;
+    }
+
+    .description-content {
+        line-height: 1.7;
+        color: #495057;
+    }
+
+    .regions-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .region-badge {
+        display: inline-block;
+        padding: 0.35rem 0.65rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+    }
+
+    .tab-content {
+        padding: 1.5rem;
+        background-color: #fff;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .nav-tabs {
+        border-bottom: none;
+    }
+
+    .nav-tabs .nav-link {
+        border: none;
+        color: #6c757d;
+        padding: 1rem 1.5rem;
+        font-weight: 500;
+        border-radius: 15px 15px 0 0;
+    }
+
+    .nav-tabs .nav-link.active {
+        color: #0d6efd;
+        background-color: #fff;
+        border-bottom: 3px solid #0d6efd;
+    }
+
+    .nav-tabs .nav-link:hover:not(.active) {
+        color: #495057;
+        background-color: #f8f9fa;
+    }
+
+    @media (max-width: 768px) {
+        .competition-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+        }
+
+        .status-step {
+            width: 20%;
+        }
+
+        .status-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
+        }
+
+        .status-label {
+            font-size: 0.7rem;
+        }
+
+        .status-timeline::before {
+            top: 19px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Заголовок соревнования -->
+    <div class="competition-header">
+        <div class="d-flex flex-wrap align-items-center">
+            <div class="competition-icon">
+                {% if competition.discipline == 'product' %}
+                    <i class="bi bi-box"></i>
+                {% elif competition.discipline == 'security' %}
+                    <i class="bi bi-shield-lock"></i>
+                {% elif competition.discipline == 'algorithm' %}
+                    <i class="bi bi-code-square"></i>
+                {% elif competition.discipline == 'robotics' %}
+                    <i class="bi bi-robot"></i>
+                {% elif competition.discipline == 'drone' %}
+                    <i class="bi bi-airplane"></i>
+                {% endif %}
+            </div>
+            <div>
+                <div class="d-flex align-items-center flex-wrap mb-2">
+                    <h1 class="mb-0 me-3">{{ competition.name }}</h1>
+                    <div>
+                        <span class="competition-badge bg-primary">{{ competition.get_format_display() }}</span>
+                        <span class="competition-badge bg-secondary">{{ competition.get_discipline_display() }}</span>
+                        <span class="competition-badge {% if competition.is_team_competition %}bg-info{% else %}bg-warning{% endif %}">
+                            {% if competition.is_team_competition %}Командное{% else %}Индивидуальное{% endif %}
+                        </span>
+                    </div>
+                </div>
+                <div>
+                    <span class="badge bg-light text-dark">
+                        <i class="bi bi-person-circle me-1"></i>
+                        Организатор: {{ competition.organizer.username }}
+                    </span>
+                    <span class="badge
+                        {% if competition.status == 'draft' %}bg-secondary
+                        {% elif competition.status == 'published' %}bg-info
+                        {% elif competition.status == 'registration' %}bg-primary
+                        {% elif competition.status == 'ongoing' %}bg-warning
+                        {% elif competition.status == 'completed' %}bg-success
+                        {% elif competition.status == 'archived' %}bg-dark{% endif %}">
+                        {{ competition.get_status_display() }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Статус соревнования (таймлайн) -->
+    <div class="status-timeline mb-4">
+        <div class="status-step {% if competition.status in ['published', 'registration', 'ongoing', 'completed', 'archived'] %}status-completed{% endif %}">
+            <div class="status-icon">
+                <i class="bi bi-megaphone"></i>
+            </div>
+            <div class="status-label">Опубликовано</div>
+        </div>
+        <div class="status-step {% if competition.status in ['registration', 'ongoing', 'completed', 'archived'] %}status-completed{% elif competition.status == 'published' %}status-active{% endif %}">
+            <div class="status-icon">
+                <i class="bi bi-pencil-square"></i>
+            </div>
+            <div class="status-label">Регистрация</div>
+        </div>
+        <div class="status-step {% if competition.status in ['ongoing', 'completed', 'archived'] %}status-completed{% elif competition.status == 'registration' %}status-active{% endif %}">
+            <div class="status-icon">
+                <i class="bi bi-play-circle"></i>
+            </div>
+            <div class="status-label">Проведение</div>
+        </div>
+        <div class="status-step {% if competition.status in ['completed', 'archived'] %}status-completed{% elif competition.status == 'ongoing' %}status-active{% endif %}">
+            <div class="status-icon">
+                <i class="bi bi-trophy"></i>
+            </div>
+            <div class="status-label">Завершено</div>
+        </div>
+        <div class="status-step {% if competition.status == 'archived' %}status-completed{% elif competition.status == 'completed' %}status-active{% endif %}">
+            <div class="status-icon">
+                <i class="bi bi-archive"></i>
+            </div>
+            <div class="status-label">Архив</div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Основная информация -->
+        <div class="col-lg-8">
+            <!-- Описание соревнования -->
+            <div class="description-card">
+                <h4 class="mb-3">Описание</h4>
+                <div class="description-content">
+                    {{ competition.description|safe }}
+                </div>
+            </div>
+
+            <!-- Навигация по вкладкам для команд -->
+            <ul class="nav nav-tabs mb-0" id="competitionTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="teams-tab" data-bs-toggle="tab" data-bs-target="#teams" type="button" role="tab" aria-controls="teams" aria-selected="true">
+                        <i class="bi bi-people-fill me-2"></i>Команды
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="forming-tab" data-bs-toggle="tab" data-bs-target="#forming" type="button" role="tab" aria-controls="forming" aria-selected="false">
+                        <i class="bi bi-people me-2"></i>Ищут участников
+                    </button>
+                </li>
+                {% if competition.status in ['completed', 'archived'] %}
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="results-tab" data-bs-toggle="tab" data-bs-target="#results" type="button" role="tab" aria-controls="results" aria-selected="false">
+                        <i class="bi bi-trophy me-2"></i>Результаты
+                    </button>
+                </li>
+                {% endif %}
+            </ul>
+
+            <!-- Содержимое вкладок -->
+            <div class="tab-content" id="competitionTabsContent">
+                <!-- Вкладка команд -->
+                <div class="tab-pane fade show active" id="teams" role="tabpanel" aria-labelledby="teams-tab">
+                    {% if approved_teams %}
+                    <div class="row row-cols-1 row-cols-md-2 g-4">
+                        {% for team in approved_teams %}
+                        <div class="col">
+                            <div class="team-card card h-100">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">{{ team.name }}</h5>
+                                    <span class="badge bg-success">Подтверждена</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <div><i class="bi bi-person-circle me-2"></i> Капитан: {{ team.captain.username }}</div>
+                                        <div><i class="bi bi-people me-2"></i> Участников: {{ team.get_confirmed_members_count() }}</div>
+                                        <div><i class="bi bi-geo-alt me-2"></i> Регион: {{ team.captain.region.name }}</div>
+                                    </div>
+                                    <a href="{{ url_for('teams.view', id=team.id) }}" class="btn btn-outline-primary w-100">
+                                        <i class="bi bi-eye me-1"></i> Подробнее
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-people fs-1 text-secondary mb-3"></i>
+                        <h5>Нет подтвержденных команд</h5>
+                        <p class="text-muted">Пока нет команд, подтвержденных для участия в этом соревновании.</p>
+                        {% if can_register and competition.status == 'registration' and competition.is_team_competition %}
+                        <a href="{{ url_for('teams.create', competition_id=competition.id) }}" class="btn btn-primary mt-2">
+                            <i class="bi bi-plus-lg me-1"></i> Создать команду
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Вкладка формирующихся команд -->
+                <div class="tab-pane fade" id="forming" role="tabpanel" aria-labelledby="forming-tab">
+                    {% if forming_teams %}
+                    <div class="row row-cols-1 row-cols-md-2 g-4">
+                        {% for team in forming_teams %}
+                        <div class="col">
+                            <div class="team-card card h-100">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">{{ team.name }}</h5>
+                                    <span class="badge bg-info">Набор участников</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <div><i class="bi bi-person-circle me-2"></i> Капитан: {{ team.captain.username }}</div>
+                                        <div><i class="bi bi-people me-2"></i> Участников: {{ team.get_confirmed_members_count() }}</div>
+                                        <div><i class="bi bi-geo-alt me-2"></i> Регион: {{ team.captain.region.name }}</div>
+                                        {% if team.description %}
+                                        <div class="mt-2">
+                                            <strong>Описание:</strong>
+                                            <p class="small mt-1">{{ team.description|truncate(100) }}</p>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <a href="{{ url_for('teams.view', id=team.id) }}" class="btn btn-outline-primary w-100">
+                                        <i class="bi bi-eye me-1"></i> Подробнее
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-people fs-1 text-secondary mb-3"></i>
+                        <h5>Нет команд, ищущих участников</h5>
+                        <p class="text-muted">Пока нет команд, которые ищут участников для этого соревнования.</p>
+                        {% if can_register and competition.status == 'registration' and competition.is_team_competition %}
+                        <a href="{{ url_for('teams.create', competition_id=competition.id) }}" class="btn btn-primary mt-2">
+                            <i class="bi bi-plus-lg me-1"></i> Создать команду
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Вкладка результатов -->
+                {% if competition.status in ['completed', 'archived'] %}
+                <div class="tab-pane fade" id="results" role="tabpanel" aria-labelledby="results-tab">
+                    {% if competition.results.count() > 0 %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Место</th>
+                                    <th>{% if competition.is_team_competition %}Команда{% else %}Участник{% endif %}</th>
+                                    <th>Баллы</th>
+                                    <th>Дополнительно</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for result in competition.results %}
+                                <tr>
+                                    <td>
+                                        <div class="place-badge {% if result.place == 1 %}place-1{% elif result.place == 2 %}place-2{% elif result.place == 3 %}place-3{% endif %}">
+                                            {{ result.place }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if competition.is_team_competition %}
+                                        <a href="{{ url_for('teams.view', id=result.team_id) }}">
+                                            {{ result.team.name }}
+                                        </a>
+                                        {% else %}
+                                        <a href="{{ url_for('profile.view', id=result.user_id) }}">
+                                            {{ result.user.username }}
+                                        </a>
+                                        {% endif %}
+                                    </td>
+                                    <td><strong>{{ result.score }}</strong></td>
+                                    <td>
+                                        {% if result.details %}
+                                        {{ result.details }}
+                                        {% else %}
+                                        -
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-trophy fs-1 text-secondary mb-3"></i>
+                        <h5>Результаты еще не опубликованы</h5>
+                        <p class="text-muted">Результаты соревнования будут доступны после их публикации организатором.</p>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Боковая информация -->
+        <div class="col-lg-4">
+            <!-- Карточка действий -->
+            <div class="info-card mb-4">
+                <div class="info-card-header">
+                    <i class="bi bi-lightning-charge me-2"></i>
+                    Действия
+                </div>
+                <div class="card-body">
+                    {% if current_user.is_authenticated %}
+                        {% if competition.status == 'registration' %}
+                            {% if can_register and competition.is_team_competition %}
+                                <div class="d-grid gap-2 mb-3">
+                                    <a href="{{ url_for('teams.create', competition_id=competition.id) }}" class="btn btn-primary">
+                                        <i class="bi bi-people-fill me-2"></i>Создать команду
+                                    </a>
+                                </div>
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle-fill me-2"></i>
+                                    <p class="mb-0">Вы можете создать команду и пригласить участников или присоединиться к существующей команде.</p>
+                                </div>
+                            {% elif can_register and not competition.is_team_competition %}
+                                <div class="d-grid gap-2">
+                                    <a href="#" class="btn btn-primary">
+                                        <i class="bi bi-person-plus-fill me-2"></i>Зарегистрироваться
+                                    </a>
+                                </div>
+                            {% elif not can_register and competition.format == 'regional' %}
+                                <div class="alert alert-warning">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                    <p class="mb-0">Соревнование доступно только для определенных регионов.</p>
+                                </div>
+                            {% elif not can_register and competition.format == 'federal' %}
+                                <div class="alert alert-warning">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                    <p class="mb-0">Соревнование доступно только для региональных представителей.</p>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle-fill me-2"></i>
+                                <p>Статус соревнования: <strong>{{ competition.get_status_display() }}</strong></p>
+                                {% if competition.status == 'published' %}
+                                    <p class="mb-0">Регистрация начнется {{ competition.registration_start.strftime('%d.%m.%Y в %H:%M') }}</p>
+                                {% elif competition.status == 'ongoing' %}
+                                    <p class="mb-0">Соревнование уже идет. Регистрация закрыта.</p>
+                                {% elif competition.status == 'completed' %}
+                                    <p class="mb-0">Соревнование завершено.</p>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                            <p class="mb-0">Чтобы зарегистрироваться на соревнование, необходимо <a href="{{ url_for('auth.login') }}">войти в систему</a>.</p>
+                        </div>
+                    {% endif %}
+
+                    <!-- Поделиться соревнованием (опционально) -->
+                    <div class="d-grid mt-3">
+                        <button class="btn btn-outline-primary" onclick="navigator.clipboard.writeText(window.location.href)">
+                            <i class="bi bi-share me-2"></i>Поделиться
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Информация о соревновании -->
+            <div class="info-card mb-4">
+                <div class="info-card-header">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Информация
+                </div>
+                <div class="card-body p-0">
+                    <div class="info-item px-3">
+                        <div class="info-icon">
+                            <i class="bi bi-calendar-event"></i>
+                        </div>
+                        <div>
+                            <div class="small text-muted">Даты проведения</div>
+                            <div>{{ competition.start_date.strftime('%d.%m.%Y') }} - {{ competition.end_date.strftime('%d.%m.%Y') }}</div>
+                        </div>
+                    </div>
+                    <div class="info-item px-3">
+                        <div class="info-icon">
+                            <i class="bi bi-pencil-square"></i>
+                        </div>
+                        <div>
+                            <div class="small text-muted">Регистрация</div>
+                            <div>{{ competition.registration_start.strftime('%d.%m.%Y') }} - {{ competition.registration_end.strftime('%d.%m.%Y') }}</div>
+                        </div>
+                    </div>
+                    {% if competition.max_participants %}
+                    <div class="info-item px-3">
+                        <div class="info-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <div>
+                            <div class="small text-muted">Максимум участников</div>
+                            <div>{{ competition.max_participants }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="info-item px-3">
+                        <div class="info-icon">
+                            <i class="bi bi-person-check"></i>
+                        </div>
+                        <div>
+                            <div class="small text-muted">Организатор</div>
+                            <div>{{ competition.organizer.username }}</div>
+                            <div class="small text-muted">{{ competition.organizer.get_role_display() }}</div>
+                        </div>
+                    </div>
+                    <div class="info-item px-3">
+                        <div class="info-icon">
+                            <i class="bi bi-geo-alt"></i>
+                        </div>
+                        <div>
+                            <div class="small text-muted">
+                                {% if competition.format == 'regional' %}
+                                Доступные регионы
+                                {% elif competition.format == 'federal' %}
+                                Все регионы
+                                {% else %}
+                                Без ограничений
+                                {% endif %}
+                            </div>
+                            {% if competition.format == 'regional' and competition.regions %}
+                            <div class="regions-list mt-1">
+                                {% for region in competition.regions %}
+                                <span class="region-badge">{{ region.name }}</span>
+                                {% endfor %}
+                            </div>
+                            {% elif competition.format == 'open' %}
+                            <div>Доступно для всех регионов</div>
+                            {% elif competition.format == 'federal' %}
+                            <div>Всероссийское соревнование</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Рекомендации по формированию команды -->
+            {% if competition.is_team_competition and competition.status == 'registration' %}
+            <div class="info-card">
+                <div class="info-card-header">
+                    <i class="bi bi-lightbulb me-2"></i>
+                    Как сформировать команду
+                </div>
+                <div class="card-body">
+                    <ol class="ps-3">
+                        <li class="mb-2"><strong>Создайте команду</strong> с помощью кнопки "Создать команду"</li>
+                        <li class="mb-2"><strong>Пригласите участников</strong> указав их идентификаторы или оставьте места для новых участников</li>
+                        <li class="mb-2">Участники <strong>подтверждают приглашения</strong> в своих профилях</li>
+                        <li class="mb-2">Когда команда готова, капитан <strong>отправляет заявку</strong> на модерацию</li>
+                        <li>После <strong>подтверждения организатором</strong> команда готова к участию</li>
+                    </ol>
+                    {% if can_register and competition.is_team_competition %}
+                    <div class="d-grid mt-3">
+                        <a href="{{ url_for('teams.create', competition_id=competition.id) }}" class="btn btn-outline-primary">
+                            <i class="bi bi-plus-lg me-2"></i>Начать сейчас
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Инициализация тултипов
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+            new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block title %}ФСП - Главная{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-pattern {
+        background-color: #0d6efd;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .discipline-card {
+        transition-property: transform, box-shadow;
+        transition-duration: 300ms;
+    }
+
+    .discipline-card:hover {
+        transform: translateY(-0.5rem);
+    }
+
+    .format-item {
+        transition-property: transform, background-color;
+        transition-duration: 300ms;
+    }
+
+    .format-item:hover {
+        transform: translateY(-0.5rem);
+    }
+
+    .feature-card {
+        transition-property: transform, border-color, box-shadow;
+        transition-duration: 300ms;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-0.5rem);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-pattern text-white py-20 md:py-24 rounded-b-[40px]">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col lg:flex-row items-center">
+            <div class="lg:w-7/12 mb-10 lg:mb-0">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">Федерация Спортивного Программирования</h1>
+                <p class="text-xl md:text-2xl mb-8 opacity-90 md:w-4/5">
+                    Добро пожаловать на платформу ФСП — единое цифровое пространство для соревнований по программированию,
+                    формирования команд и отслеживания достижений.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="{{ url_for('competitions.list') }}" class="px-6 py-3 bg-white text-primary rounded-lg font-semibold shadow-lg hover:shadow-xl transition-shadow flex items-center">
+                        <i class="bi bi-search mr-2"></i>
+                        Найти соревнования
+                    </a>
+                    {% if not current_user.is_authenticated %}
+                    <a href="{{ url_for('auth.register') }}" class="px-6 py-3 bg-transparent border-2 border-white text-white rounded-lg font-semibold hover:bg-white hover:bg-opacity-10 transition-colors flex items-center">
+                        <i class="bi bi-person-plus mr-2"></i>
+                        Регистрация
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="lg:w-5/12 hidden lg:block">
+                <img src="/static/img/hero-illustration.svg" alt="Программирование" class="w-full">
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container mx-auto px-4 py-12">
+    <!-- Дисциплины -->
+    <section class="mb-16">
+        <h2 class="text-3xl font-bold text-primary mb-8 relative inline-block">
+            Дисциплины
+            <span class="absolute -bottom-2 left-0 w-12 h-1 bg-primary rounded-full"></span>
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+            <div class="discipline-card bg-white rounded-xl shadow-md hover:shadow-xl p-6 text-center">
+                <div class="text-4xl text-primary mb-4">
+                    <i class="bi bi-box"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Продуктовое программирование</h3>
+                <p class="text-gray-600">Создание программных продуктов и сервисов</p>
+            </div>
+            <div class="discipline-card bg-white rounded-xl shadow-md hover:shadow-xl p-6 text-center">
+                <div class="text-4xl text-primary mb-4">
+                    <i class="bi bi-shield-lock"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Информационная безопасность</h3>
+                <p class="text-gray-600">Защита данных и систем от уязвимостей</p>
+            </div>
+            <div class="discipline-card bg-white rounded-xl shadow-md hover:shadow-xl p-6 text-center">
+                <div class="text-4xl text-primary mb-4">
+                    <i class="bi bi-code-square"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Алгоритмическое программирование</h3>
+                <p class="text-gray-600">Разработка эффективных алгоритмов</p>
+            </div>
+            <div class="discipline-card bg-white rounded-xl shadow-md hover:shadow-xl p-6 text-center">
+                <div class="text-4xl text-primary mb-4">
+                    <i class="bi bi-robot"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Программирование робототехники</h3>
+                <p class="text-gray-600">Создание ПО для роботизированных систем</p>
+            </div>
+            <div class="discipline-card bg-white rounded-xl shadow-md hover:shadow-xl p-6 text-center">
+                <div class="text-4xl text-primary mb-4">
+                    <i class="bi bi-airplane"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Программирование БПЛА</h3>
+                <p class="text-gray-600">Разработка систем для беспилотных аппаратов</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Форматы соревнований -->
+    <section class="mb-16">
+        <h2 class="text-3xl font-bold text-primary mb-8 relative inline-block">
+            Форматы соревнований
+            <span class="absolute -bottom-2 left-0 w-12 h-1 bg-primary rounded-full"></span>
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="format-item bg-gray-50 rounded-xl p-6 text-center">
+                <div class="text-4xl text-primary mb-4">
+                    <i class="bi bi-globe"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Открытые</h3>
+                <p class="text-gray-600">Доступны для всех желающих, без ограничений по региону или квалификации</p>
+            </div>
+            <div class="format-item bg-gray-50 rounded-xl p-6 text-center">
+                <div class="text-4xl text-primary mb-4">
+                    <i class="bi bi-geo-alt"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Региональные</h3>
+                <p class="text-gray-600">Только для жителей конкретного региона или нескольких регионов России</p>
+            </div>
+            <div class="format-item bg-gray-50 rounded-xl p-6 text-center">
+                <div class="text-4xl text-primary mb-4">
+                    <i class="bi bi-flag"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Всероссийские</h3>
+                <p class="text-gray-600">Организуются ФСП, заявки подаются через региональных представителей</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Призыв к действию -->
+    <section class="bg-gray-50 rounded-2xl p-8 md:p-12 mb-16 text-center">
+        <h2 class="text-3xl font-bold mb-4">Присоединяйтесь к сообществу!</h2>
+        <p class="text-xl text-gray-600 mb-6 max-w-3xl mx-auto">Развивайте свои навыки, соревнуйтесь с лучшими и становитесь частью сообщества программистов России.</p>
+        {% if not current_user.is_authenticated %}
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="{{ url_for('auth.login') }}" class="px-6 py-3 bg-primary text-white rounded-lg font-semibold shadow-md hover:shadow-lg transition-shadow flex items-center">
+                <i class="bi bi-box-arrow-in-right mr-2"></i>
+                Войти
+            </a>
+            <a href="{{ url_for('auth.register') }}" class="px-6 py-3 bg-white border border-primary text-primary rounded-lg font-semibold hover:bg-gray-50 transition-colors flex items-center">
+                <i class="bi bi-person-plus mr-2"></i>
+                Регистрация
+            </a>
+        </div>
+        {% else %}
+        <div class="flex justify-center">
+            <a href="{{ url_for('competitions.list') }}" class="px-6 py-3 bg-primary text-white rounded-lg font-semibold shadow-md hover:shadow-lg transition-shadow flex items-center">
+                <i class="bi bi-trophy mr-2"></i>
+                Участвовать в соревнованиях
+            </a>
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- Возможности платформы -->
+    <section class="mb-12">
+        <h2 class="text-3xl font-bold text-primary mb-8 relative inline-block">
+            Возможности платформы
+            <span class="absolute -bottom-2 left-0 w-12 h-1 bg-primary rounded-full"></span>
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="feature-card border border-gray-200 rounded-xl p-6 text-center hover:border-primary">
+                <div class="text-4xl text-primary mb-4">
+                    <i class="bi bi-info-circle"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Информация о соревнованиях</h3>
+                <p class="text-gray-600">Подробные описания, требования и сроки проведения мероприятий</p>
+            </div>
+            <div class="feature-card border border-gray-200 rounded-xl p-6 text-center hover:border-primary">
+                <div class="text-4xl text-primary mb-4">
+                    <i class="bi bi-people"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Формирование команд</h3>
+                <p class="text-gray-600">Создавайте команды или присоединяйтесь к существующим</p>
+            </div>
+            <div class="feature-card border border-gray-200 rounded-xl p-6 text-center hover:border-primary">
+                <div class="text-4xl text-primary mb-4">
+                    <i class="bi bi-clipboard-check"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Регистрация на соревнования</h3>
+                <p class="text-gray-600">Удобный процесс подачи заявок и отслеживания статуса</p>
+            </div>
+            <div class="feature-card border border-gray-200 rounded-xl p-6 text-center hover:border-primary">
+                <div class="text-4xl text-primary mb-4">
+                    <i class="bi bi-graph-up"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Рейтинг и достижения</h3>
+                <p class="text-gray-600">Отслеживайте свой прогресс и соревнуйтесь в рейтинге</p>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Дополнительный JavaScript, если необходимо
+</script>
+{% endblock %}
